@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import "./App.css"; // Ensure to create this CSS file for font and style changes
+import "./App.css";
 
 const App = () => {
-  const question = "Name a few rock bands that programmers might";
+  const question = "Name a few rock bands that a programmer might like";
   const answers = ["Perl Jam", "Fleetwood PC", "Depeche Code"];
   const imageMap = {
     "Perl Jam":
@@ -16,11 +16,11 @@ const App = () => {
     "Unicode",
     "Caesar Cipher",
     "ROT13",
-    "Base64",
-    "Hex",
+    // TODO: add back at a later time
+    // "Base64",
+    // "Hex",
   ];
 
-  // Function to convert the answer to its corresponding Unicode values
   const toUnicodeValues = (str) => {
     return str
       .split("")
@@ -28,7 +28,6 @@ const App = () => {
       .join(" ");
   };
 
-  // Function to apply Caesar Cipher
   const toCaesarCipher = (str, shift = 3) => {
     return str
       .split("")
@@ -49,7 +48,6 @@ const App = () => {
       .join("");
   };
 
-  // Function to apply ROT13
   const toROT13 = (str) => {
     return str
       .split("")
@@ -70,12 +68,10 @@ const App = () => {
       .join("");
   };
 
-  // Function to apply Base64 Encoding
   const toBase64 = (str) => {
     return btoa(str);
   };
 
-  // Function to apply Hexadecimal Encoding
   const toHex = (str) => {
     return str
       .split("")
@@ -83,7 +79,6 @@ const App = () => {
       .join(" ");
   };
 
-  // Function to encrypt based on selected method
   const encrypt = (str, method) => {
     switch (method) {
       case "Caesar Cipher":
@@ -108,7 +103,7 @@ const App = () => {
   const [showCorrect, setShowCorrect] = useState(false);
   const [randomImageUrl, setRandomImageUrl] = useState(imageMap[answers[0]]);
   const [selectedMethod, setSelectedMethod] = useState(encryptionMethods[0]);
-
+  const [hintButton, setHintButton] = useState(false);
   useEffect(() => {
     const encrypted = encrypt(selectedAnswer, selectedMethod);
     const imageUrl = imageMap[selectedAnswer];
@@ -146,11 +141,13 @@ const App = () => {
     setUserInput("");
     setShowCorrect(false);
     setShowKeepTrying(false);
+    setHintButton(false);
   };
 
   return (
     <div
       style={{
+        // width: "50%",
         textAlign: "center",
         marginTop: "50px",
         fontFamily: "Arial Narrow, sans-serif",
@@ -160,25 +157,23 @@ const App = () => {
       <div style={{ marginTop: "20px" }}>
         <p>{encryptedAnswer}</p>
       </div>
+      <button
+        onClick={() => {
+          setHintButton(!hintButton);
+        }}
+      >
+        hint!
+      </button>
+      {hintButton && (
+        <div style={{ marginTop: "20px" }}>
+          <img
+            src={randomImageUrl}
+            alt="Random"
+            style={{ margin: "20px auto", height: "250px", width: "250px" }}
+          />
+        </div>
+      )}
       <div style={{ marginTop: "20px" }}>
-        <img
-          src={randomImageUrl}
-          alt="Random"
-          style={{ margin: "20px auto", height: "250px", width: "250px" }}
-        />
-      </div>
-      <div style={{ marginTop: "20px" }}>
-        <select
-          value={selectedMethod}
-          onChange={handleMethodChange}
-          style={{ marginBottom: "20px" }}
-        >
-          {encryptionMethods.map((method) => (
-            <option key={method} value={method}>
-              {method}
-            </option>
-          ))}
-        </select>
         <input
           type="text"
           value={userInput}
@@ -191,16 +186,38 @@ const App = () => {
           }}
         />
       </div>
-      <div style={{ marginTop: "10px" }}>
+      <div
+        style={{
+          marginTop: "5px",
+        }}
+      >
+        <select
+          value={selectedMethod}
+          onChange={handleMethodChange}
+          style={{ marginBottom: "20px" }}
+        >
+          {encryptionMethods.map((method) => (
+            <option key={method} value={method}>
+              {method}
+            </option>
+          ))}
+        </select>
+      </div>
+      <span
+        style={{
+          marginTop: "10px",
+          display: "flex",
+          justifyContent: "space-around",
+        }}
+      >
         <button onClick={handleSubmit} style={{ marginTop: "10px" }}>
           Submit
         </button>
-      </div>
-      <div style={{ marginTop: "20px" }}>
+
         <button onClick={handleNext} style={{ marginTop: "10px" }}>
           Next
         </button>
-      </div>
+      </span>
       <div style={{ marginTop: "20px" }}>
         {showCorrect && <p>Correct!</p>}
         {showKeepTrying && <p>Keep Trying!</p>}
